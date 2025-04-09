@@ -68,6 +68,8 @@ PCD_HandleTypeDef hpcd_USB_OTG_FS;
 
 /* USER CODE BEGIN PV */
 
+int counter = 0;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -123,6 +125,23 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+
+  while (counter < 21) {
+      ++counter;
+  }
+
+  counter = 0;
+
+  int *p_int;
+  p_int = &counter;
+
+  while (*p_int < 21) {
+      ++(*p_int);
+  }
+
+  p_int = (int *)0x200007ACU;
+  *p_int = 0xDEADBEEF;
+
   while (1)
   {
     /* USER CODE END WHILE */
