@@ -123,6 +123,33 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+
+  int counter = 0;
+
+  while (counter < 21) {
+      ++counter;
+  }
+
+  counter = 0;
+
+  while (counter < 20) {
+      ++counter;
+      ++counter;
+  }
+
+  counter = 0;
+
+  while (counter < 20) {
+      ++counter;
+      if ((counter & 1) != 0) {
+          // do something when the counter is odd
+          ++counter;
+      } else {
+          // do something when the counter is even
+          ++counter;
+      }
+  }
+
   while (1)
   {
     /* USER CODE END WHILE */
