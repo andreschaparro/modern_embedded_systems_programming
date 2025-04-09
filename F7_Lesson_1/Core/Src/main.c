@@ -123,6 +123,20 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+
+  int counter1 = 0;
+  unsigned int counter2 = 0;
+
+  ++counter1;
+  ++counter1;
+  ++counter1;
+  ++counter1;
+
+  ++counter2;
+  ++counter2;
+  ++counter2;
+  ++counter2;
+
   while (1)
   {
     /* USER CODE END WHILE */
