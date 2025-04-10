@@ -33,6 +33,9 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 
+#define MY_GPIOB_BASE 0x40020400U
+#define MY_GPIOB_ODR (*((unsigned int*)(MY_GPIOB_BASE + 0x14U)))
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -122,23 +125,38 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-  int counter = 0;
+  /*
+   * Blinks the blue led
+   */
 
-    while (1) {
-        *((unsigned int*) 0x40020414U) = 0x80U;
+  /*
+   * With optimize most (-O3) the program doesn't work
+   * if the counter variable is not of the volatile type
+   * because its value is discarded after being used
+   */
+  int volatile counter = 0;
 
-        counter = 0;
-        while (counter < 1000000) {
-            ++counter;
-        }
+  while (1) {
+      MY_GPIOB_ODR = 0x80U; // turn on the blue led
 
-        *((unsigned int*) 0x40020414U) = 0x0U;
+      counter = 0;
+      while (counter < 1000000) { // delay loop
+          ++counter;
+      }
 
-        counter = 0;
-        while (counter < 1000000) {
-            ++counter;
-        }
-    }
+      /*
+       * Turn off the blue led similarly as the following line of code:
+       * MY_GPIOB_ODR = 0x0U;
+       * But using the STM32 Low-Layer APIs
+       */
+      LL_GPIO_WriteOutputPort(GPIOB, 0x0U);
+
+      counter = 0;
+
+      while (counter < 1000000) { // delay loop
+          ++counter;
+      }
+  }
 
   while (1)
   {
