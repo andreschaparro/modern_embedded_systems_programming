@@ -33,6 +33,12 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 
+#define MY_GPIOB_BASE 0x40020400U
+#define MY_GPIOB_ODR (*((unsigned int*)(MY_GPIOB_BASE + 0x14U)))
+#define MY_GPIOB_BSRR (*((unsigned int*)(MY_GPIOB_BASE + 0x18U)))
+#define MY_LED_BLUE (1U << 7)
+#define MY_LED_RED (1U << 14)
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -121,6 +127,46 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+
+  MY_GPIOB_ODR = MY_LED_BLUE;
+
+  int volatile counter[2] = { 0, 0 }; // array definition and initialization
+
+  while (1) {
+
+      /*
+       * Turn the red led on
+       * without modifying the state of the modify the blue led
+       * in an atomic operation
+       */
+      MY_GPIOB_BSRR = MY_LED_RED;
+
+      /*
+       * Syntax for reading and modifying an element of an array
+       */
+      counter[0] = 0;
+      while (counter[0] < 1000000) {
+          ++counter[0];
+      }
+
+      /*
+       * Turn the red led off
+       * without modifying the state of the modify the blue led
+       * in an load-modifiy-storage procedure
+       */
+      MY_GPIOB_ODR &= ~MY_LED_RED;
+
+      /*
+       * Syntax for reading and modifying an array element
+       * using pointer arithmetic
+       */
+      *(counter + 1) = 0;
+      while (*(counter + 1) < 1000000) {
+          ++(*(counter + 1));
+      }
+
+  }
+
   while (1)
   {
     /* USER CODE END WHILE */

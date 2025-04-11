@@ -133,6 +133,8 @@ int main(void)
    * With optimize most (-O3) the program doesn't work
    * if the counter variable is not of the volatile type
    * because its value is discarded after being used
+   *
+   * The volatile keyword prevents the compiler from applying optimization to counter
    */
   int volatile counter = 0;
 

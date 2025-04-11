@@ -146,7 +146,7 @@ int main(void)
   z = x >> 3;
   z = y >> 3;
 
-  MY_GPIOB_ODR = MY_LED_BLUE;; // turn the blue led on
+  MY_GPIOB_ODR = MY_LED_BLUE; // turn the blue led on
 
   /*
    * Prevents the compiler from applying
