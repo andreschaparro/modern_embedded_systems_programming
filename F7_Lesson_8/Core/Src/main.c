@@ -33,6 +33,12 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 
+#define MY_GPIOB_BASE 0x40020400U
+#define MY_GPIOB_ODR (*((unsigned int*)(MY_GPIOB_BASE + 0x14U)))
+#define MY_GPIOB_BSRR (*((unsigned int*)(MY_GPIOB_BASE + 0x18U)))
+#define MY_LED_BLUE (1U << 7)
+#define MY_LED_RED (1U << 14)
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -75,6 +81,9 @@ static void MX_ETH_Init(void);
 static void MX_USART3_UART_Init(void);
 static void MX_USB_OTG_FS_PCD_Init(void);
 /* USER CODE BEGIN PFP */
+
+void delay1(void);
+void delay2(int iter);
 
 /* USER CODE END PFP */
 
@@ -121,6 +130,24 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+
+  /*
+   * DRY principle = DO NOT REAPEAT YOURSELF
+   */
+
+  MY_GPIOB_ODR |= MY_LED_BLUE; // Turn the blue led on
+
+  while (1) {
+
+      MY_GPIOB_ODR |= MY_LED_RED; // Turn the red led on
+
+      delay1();
+
+      MY_GPIOB_ODR &= ~MY_LED_RED; // Turn the red led off
+
+      delay2(500000);
+  }
+
   while (1)
   {
     /* USER CODE END WHILE */
@@ -422,6 +449,22 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+
+void delay1(void) {
+    int volatile counter;
+    counter = 0;
+    while (counter < 1000000) {
+        ++counter;
+    }
+}
+
+void delay2(int iter) {
+    int volatile counter;
+    counter = 0;
+    while (counter < iter) {
+        ++counter;
+    }
+}
 
 /* USER CODE END 4 */
 
