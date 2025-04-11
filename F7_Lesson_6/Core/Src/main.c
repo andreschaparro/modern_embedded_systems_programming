@@ -34,13 +34,10 @@
 /* USER CODE BEGIN PD */
 
 #define MY_GPIOB_BASE 0x40020400U
-#define MY_GPIOB_MODER (*((unsigned int*)(MY_GPIOB_BASE + 0x00U)))
-#define MY_GPIOB_OTYPER (*((unsigned int*)(MY_GPIOB_BASE + 0x04U)))
-#define MY_GPIOB_OSPEEDR (*((unsigned int*)(MY_GPIOB_BASE + 0x08U)))
-#define MY_GPIOB_PUPDR (*((unsigned int*)(MY_GPIOB_BASE + 0x0CU)))
-#define MY_GPIOB_IDR (*((unsigned int*)(MY_GPIOB_BASE + 0x10U)))
 #define MY_GPIOB_ODR (*((unsigned int*)(MY_GPIOB_BASE + 0x14U)))
 #define MY_GPIOB_BSRR (*((unsigned int*)(MY_GPIOB_BASE + 0x18U)))
+#define MY_LED_BLUE (1U << 7)
+#define MY_LED_RED (1U << 14)
 
 /* USER CODE END PD */
 
@@ -142,8 +139,51 @@ int main(void)
   c = b >> 1; // right-shift
   c = b << 3; // left-shift
 
+  int x = 1024;
+  int y = -1024;
+  int z;
+
+  z = x >> 3;
+  z = y >> 3;
+
+  MY_GPIOB_ODR = MY_LED_BLUE;; // turn the blue led on
+
+  /*
+   * Prevents the compiler from applying
+   * optimize most (-O3) to counter
+   */
+  int volatile counter = 0;
+
+  while (1) {
+
+      /*
+       * Turn the red led on
+       * without modifying the state of the modify the blue led
+       */
+      MY_GPIOB_ODR |= MY_LED_RED;
+
+      counter = 0;
+      while (counter < 1000000) {
+          ++counter;
+      }
+
+      /*
+       * Turn the red led off
+       * without modifying the state of the modify the blue led
+       */
+
+      MY_GPIOB_ODR &= ~MY_LED_RED;
+
+      counter = 0;
+      while (counter < 1000000) {
+          ++counter;
+      }
+
+  }
+
   while (1)
   {
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
