@@ -23,6 +23,8 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
+#include "delay.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -32,6 +34,12 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+
+#define MY_GPIOB_BASE 0x40020400U
+#define MY_GPIOB_ODR (*((unsigned int*)(MY_GPIOB_BASE + 0x14U)))
+#define MY_GPIOB_BSRR (*((unsigned int*)(MY_GPIOB_BASE + 0x18U)))
+#define MY_LED_BLUE (1U << 7)
+#define MY_LED_RED (1U << 14)
 
 /* USER CODE END PD */
 
@@ -75,6 +83,8 @@ static void MX_ETH_Init(void);
 static void MX_USART3_UART_Init(void);
 static void MX_USB_OTG_FS_PCD_Init(void);
 /* USER CODE BEGIN PFP */
+
+unsigned fact(unsigned n);
 
 /* USER CODE END PFP */
 
@@ -121,6 +131,26 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+
+  unsigned volatile x;
+
+  x = fact(0U);
+  x = 2U + 3U * fact(1U);
+  (void)fact(5U); // don't care the return value
+
+  MY_GPIOB_ODR |= MY_LED_BLUE; // Turn the blue led on
+
+  while (1) {
+
+      MY_GPIOB_ODR |= MY_LED_RED; // Turn the red led on
+
+      delay(1000000);
+
+      MY_GPIOB_ODR &= ~MY_LED_RED; // Turn the red led off
+
+      delay(500000);
+  }
+
   while (1)
   {
     /* USER CODE END WHILE */
@@ -422,6 +452,28 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+
+/*
+ * Procedure Call Standard for Arm Architecture (AAPCS)
+ *
+ * https://developer.arm.com/documentation/107656/0101/Getting-started-with-Armv8-M-based-systems/Procedure-Call-Standard-for-Arm-Architecture--AAPCS-?lang=en
+ */
+
+unsigned fact(unsigned n){
+    // 0! = 1
+    // n! = n*(n-1)! for n > 0
+
+    /*
+     * Never use recursion or deep call sequences because they use a lot RAM for the stack.
+     * Use a iteration version or a lookup table.
+     */
+
+    if (n == 0U) {
+        return 1U;
+    } else {
+        return n * fact(n - 1);
+    }
+}
 
 /* USER CODE END 4 */
 
